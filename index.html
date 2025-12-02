@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Robotics Store - Grade 10 Project</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: #0f172a;
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .app {
+      max-width: 1100px;
+      width: 100%;
+      background: #020617;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 16px 24px;
+      border-bottom: 1px solid #1f2937;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: radial-gradient(circle at top left, #1e293b, #020617);
+    }
+
+    header h1 {
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    header h1 span.logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #22c55e, #0ea5e9);
+      font-size: 20px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(135deg, #22c55e, #0ea5e9);
+      border-color: transparent;
+      color: #020617;
+      font-weight: 600;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.35);
+    }
+
+    main {
+      display: flex;
+      flex: 1;
+      padding: 16px 20px 20px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    section {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+
+    .store-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+      gap: 16px;
+    }
+
+    /* Search + category toolbar */
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar input,
+    .toolbar select {
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .toolbar input:focus,
+    .toolbar select:focus {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.4);
+    }
+
+    .toolbar input {
+      flex: 1 1 160px;
+    }
+
+    .toolbar select {
+      flex: 0 0 160px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    .product-card {
+      background: #020617;
+      border-radius: 14px;
+      border: 1px solid #1f2937;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 0.12s ease;
+    }
+
+    .product-card:hover {
+      border-color: #22c55e;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.35);
+    }
+
+    .product-icon-wrapper {
+      width: 100%;
+      padding-top: 60%;
+      border-radius: 12px;
+      background: radial-gradient(circle at top, #0ea5e9, #020617);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-icon-wrapper img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-icon-fallback {
+      position: absolute;
+      font-size: 36px;
+    }
+
+    .product-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .product-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .product-price {
+      font-size: 13px;
+      color: #a5b4fc;
+    }
+
+    .product-category {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .product-actions {
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-sm {
+      font-size: 12px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.12s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #020617;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+    }
+
+    .btn-ghost:hover {
+      background: #111827;
+    }
+
+    .cart {
+      background: #020617;
+      border-radius: 14px;
+      border: 1px solid #1f2937;
+      padding: 10px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 480px;
+    }
+
+    .cart-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 2px;
+      border-bottom: 1px solid #111827;
+      font-size: 13px;
+    }
+
+    .cart-item-name {
+      font-weight: 500;
+    }
+
+    .cart-item-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+    }
+
+    .quantity-badge {
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .cart-empty {
+      font-size: 13px;
+      color: #9ca3af;
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    .cart-summary {
+      margin-top: 6px;
+      border-top: 1px dashed #374151;
+      padding-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .cart-total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+
+    .cart-total-label {
+      color: #9ca3af;
+    }
+
+    .cart-total-value {
+      font-weight: 600;
+      color: #a5b4fc;
+    }
+
+    .cart-buttons {
+      display: flex;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .cart-note {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    /* Admin styles */
+
+    #adminView {
+      background: #020617;
+      border-radius: 14px;
+      border: 1px solid #1f2937;
+      padding: 10px 12px 12px;
+      max-height: 520px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    #adminView h2 {
+      margin-bottom: 2px;
+    }
+
+    .admin-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.6fr);
+      gap: 10px;
+    }
+
+    form label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 4px;
+      color: #e5e7eb;
+    }
+
+    form input,
+    form textarea {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 12px;
+      margin-bottom: 6px;
+      outline: none;
+    }
+
+    form input:focus,
+    form textarea:focus {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.4);
+    }
+
+    form textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .form-row > div {
+      flex: 1;
+    }
+
+    .admin-buttons {
+      display: flex;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .admin-buttons .btn-sm {
+      width: auto;
+    }
+
+    .table-wrapper {
+      border-radius: 10px;
+      border: 1px solid #1f2937;
+      overflow: hidden;
+      background: #020617;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    th, td {
+      padding: 6px 8px;
+      border-bottom: 1px solid #111827;
+      text-align: left;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background: #020617;
+      z-index: 1;
+      font-weight: 500;
+      color: #9ca3af;
+    }
+
+    tr:hover td {
+      background: #020617;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 10px;
+      background: rgba(34,197,94,0.1);
+      color: #bbf7d0;
+    }
+
+    /* QR overlay */
+
+    .qr-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .qr-modal {
+      background: #020617;
+      padding: 18px 18px 14px;
+      border-radius: 16px;
+      border: 1px solid #22c55e;
+      max-width: 320px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+    }
+
+    .qr-modal h3 {
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .qr-modal p {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+
+    #qrAmount {
+      font-size: 14px;
+      margin-bottom: 4px;
+      font-weight: 600;
+      color: #a5b4fc;
+    }
+
+    #orderSummaryShort {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+
+    #qrcode {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 10px auto;
+      background: #020617;
+      border-radius: 12px;
+      border: 1px dashed #374151;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        flex-direction: column;
+      }
+      .store-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      #adminView {
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .nav-buttons {
+        width: 100%;
+      }
+      .nav-btn {
+        flex: 1;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>
+        <span class="logo">??</span>
+        Robotics & Electronics Store
+      </h1>
+      <div class="nav-buttons">
+        <button class="nav-btn active" id="storeTabBtn">Store</button>
+        <button class="nav-btn" id="adminTabBtn">Admin (CRUD)</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- STORE VIEW -->
+      <section id="storeView">
+        <h2>Shop Products</h2>
+        <p class="subtitle">
+          Tap a product icon to add it to your cart. Use search and category filter to find items faster.
+        </p>
+
+        <!-- Customer search + category filter -->
+        <div class="toolbar">
+          <input
+            type="text"
+            id="storeSearchInput"
+            placeholder="Search products by name..."
+          />
+          <select id="storeCategoryFilter">
+            <option value="all">All categories</option>
+          </select>
+        </div>
+
+        <div class="store-layout">
+          <div>
+            <div class="product-grid" id="productGrid">
+              <!-- Products will be injected here -->
+            </div>
+          </div>
+
+          <aside class="cart">
+            <div class="cart-title">Cart</div>
+            <div id="cartItems" class="cart-items">
+              <!-- Cart items here -->
+            </div>
+            <div class="cart-summary">
+              <div class="cart-total-row">
+                <span class="cart-total-label">Total</span>
+                <span class="cart-total-value" id="cartTotal">?0.00</span>
+              </div>
+              <div class="cart-buttons">
+                <button class="btn-sm btn-primary" id="payButton">Pay & Show QR</button>
+                <button class="btn-sm btn-ghost" id="clearCartButton">Clear Cart</button>
+              </div>
+              <p class="cart-note">
+                After scanning the QR code, complete payment in your UPI / banking app.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ADMIN VIEW (CRUD) -->
+      <section id="adminView" class="hidden">
+        <h2>Admin – Manage Products (CRUD)</h2>
+        <p class="subtitle">
+          Add, edit, or delete products. Search by name and filter by category. Changes are saved in this browser using localStorage.
+        </p>
+
+        <!-- Admin search + category filter -->
+        <div class="toolbar">
+          <input
+            type="text"
+            id="adminSearchInput"
+            placeholder="Search products in admin..."
+          />
+          <select id="adminCategoryFilter">
+            <option value="all">All categories</option>
+          </select>
+        </div>
+
+        <div class="admin-layout">
+          <!-- Form -->
+          <div>
+            <form id="productForm">
+              <input type="hidden" id="productId" />
+              <label for="productName">Product Name</label>
+              <input type="text" id="productName" placeholder="e.g., Line Follower Robot Kit" required />
+
+              <div class="form-row">
+                <div>
+                  <label for="productPrice">Price (?)</label>
+                  <input type="number" id="productPrice" step="0.01" placeholder="e.g., 1499" required />
+                </div>
+                <div>
+                  <label for="productCategory">Category</label>
+                  <input type="text" id="productCategory" placeholder="e.g., Robot Kit / Sensor" />
+                </div>
+              </div>
+
+              <label for="productIcon">Icon / Image URL</label>
+              <input type="text" id="productIcon" placeholder="Paste image URL or leave empty for emoji" />
+
+              <label for="productDescription">Short Description</label>
+              <textarea id="productDescription" placeholder="e.g., Includes Arduino, motors, chassis, sensors..."></textarea>
+
+              <div class="admin-buttons">
+                <button class="btn-sm btn-primary" type="submit">Save Product</button>
+                <button class="btn-sm btn-ghost" type="button" id="resetFormBtn">Reset Form</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Table -->
+          <div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>? Price</th>
+                    <th>Category</th>
+                    <th style="width: 90px;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="productTableBody">
+                  <!-- Rows injected here -->
+                </tbody>
+              </table>
+            </div>
+            <p class="subtitle" style="margin-top: 6px;">
+              <span class="tag">CRUD</span>
+              &nbsp;Create, Read, Update, Delete operations are all supported here.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- QR Overlay -->
+  <div id="qrOverlay" class="qr-overlay hidden">
+    <div class="qr-modal">
+      <h3>Scan to Pay</h3>
+      <p>Scan this QR code with your UPI / banking app to pay for your cart.</p>
+      <div id="qrAmount">Amount: ?0.00</div>
+      <div id="orderSummaryShort"></div>
+      <div id="qrcode">QR</div>
+      <button class="btn-sm btn-primary" id="confirmPaidBtn">I Have Paid & Confirm Order</button>
+      <button class="btn-sm btn-ghost" id="closeQrBtn">Close</button>
+    </div>
+  </div>
+
+  <!-- QRCode.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    const STORAGE_KEY = "robotStoreProducts";
+
+    // ?? Admin credentials
+    const ADMIN_USERNAME = "admin";
+    const ADMIN_PASSWORD = "robot123";
+
+    // ?? UPI payment configuration – using your UPI ID
+    const UPI_ID = "yogitrajagopal@okaxis";
+    const PAYEE_NAME = "Yogit";
+    const CURRENCY = "INR";
+
+    // ?? Email config – your Gmail ID
+    const ADMIN_EMAIL = "yogitrajagopal@gmail.com";
+
+    let products = [];
+    let cart = [];
+    let isAdminLoggedIn = false;
+    let qrInstance = null;
+    let lastOrderInfo = null; // store last generated order info
+
+    // ?? Search & category filter state
+    let storeSearchTerm = "";
+    let storeCategoryFilter = "all";
+    let adminSearchTerm = "";
+    let adminCategoryFilter = "all";
+
+    function loadProductsFromStorage() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          products = JSON.parse(stored) || [];
+        } catch (e) {
+          products = [];
+        }
+      } else {
+        products = [];
+      }
+    }
+
+    function saveProductsToStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+    }
+
+    function seedDefaultProductsIfEmpty() {
+      if (products.length === 0) {
+        products = [
+          {
+            id: Date.now(),
+            name: "Line Follower Robot Kit",
+            price: 1499,
+            category: "Robot Kit",
+            iconUrl: "",
+            description: "Beginner-friendly line follower kit with IR sensors, motors, and chassis."
+          },
+          {
+            id: Date.now() + 1,
+            name: "Arduino UNO Starter Kit",
+            price: 1299,
+            category: "Development Board",
+            iconUrl: "",
+            description: "Includes Arduino UNO, jumper wires, LEDs, resistors, sensors."
+          },
+          {
+            id: Date.now() + 2,
+            name: "Ultrasonic Sensor (HC-SR04)",
+            price: 99,
+            category: "Sensor",
+            iconUrl: "",
+            description: "Distance measurement sensor for obstacle-avoiding robots."
+          }
+        ];
+        saveProductsToStorage();
+      }
+    }
+
+    // ??? Update category dropdown options for a given select
+    function updateCategoryOptions(selectId) {
+      const select = document.getElementById(selectId);
+      if (!select) return;
+
+      const previousValue = select.value || "all";
+
+      const categories = Array.from(
+        new Set(
+          products
+            .map(p => (p.category || "").trim())
+            .filter(c => c.length > 0)
+        )
+      ).sort((a, b) => a.localeCompare(b));
+
+      select.innerHTML = "";
+
+      const allOpt = document.createElement("option");
+      allOpt.value = "all";
+      allOpt.textContent = "All categories";
+      select.appendChild(allOpt);
+
+      categories.forEach(cat => {
+        const opt = document.createElement("option");
+        opt.value = cat;
+        opt.textContent = cat;
+        select.appendChild(opt);
+      });
+
+      if (previousValue && (previousValue === "all" || categories.includes(previousValue))) {
+        select.value = previousValue;
+      } else {
+        select.value = "all";
+      }
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById("productGrid");
+      grid.innerHTML = "";
+
+      if (products.length === 0) {
+        grid.innerHTML = "<p class='cart-empty'>No products yet. Add some in the Admin tab.</p>";
+        return;
+      }
+
+      const filteredProducts = products.filter((product) => {
+        const nameMatch = product.name.toLowerCase().includes(storeSearchTerm);
+        const category = (product.category || "").toLowerCase();
+        const categoryMatch =
+          storeCategoryFilter === "all" ||
+          category === storeCategoryFilter.toLowerCase();
+        return nameMatch && categoryMatch;
+      });
+
+      if (filteredProducts.length === 0) {
+        grid.innerHTML = "<p class='cart-empty'>No products match your search/filter.</p>";
+        return;
+      }
+
+      filteredProducts.forEach((product) => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+
+        const hasIcon = product.iconUrl && product.iconUrl.trim().length > 0;
+
+        card.innerHTML = `
+          <div class="product-icon-wrapper">
+            ${
+              hasIcon
+                ? `<img src="${product.iconUrl}" alt="${product.name} icon" />`
+                : `<div class="product-icon-fallback">??</div>`
+            }
+          </div>
+          <div class="product-info">
+            <div class="product-name">${product.name}</div>
+            <div class="product-price">?${product.price.toFixed(2)}</div>
+            <div class="product-category">${product.category || "Uncategorized"}</div>
+          </div>
+          <div class="product-actions">
+            <button class="btn-sm btn-primary add-to-cart-btn" data-id="${product.id}">
+              + Add to cart
+            </button>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    function renderCart() {
+      const cartItemsDiv = document.getElementById("cartItems");
+      const cartTotalSpan = document.getElementById("cartTotal");
+
+      cartItemsDiv.innerHTML = "";
+
+      if (cart.length === 0) {
+        cartItemsDiv.innerHTML = `<div class="cart-empty">Your cart is empty.</div>`;
+        cartTotalSpan.textContent = "?0.00";
+        return;
+      }
+
+      let total = 0;
+
+      cart.forEach((item) => {
+        const product = products.find((p) => p.id === item.productId);
+        if (!product) return;
+
+        const itemTotal = product.price * item.quantity;
+        total += itemTotal;
+
+        const row = document.createElement("div");
+        row.className = "cart-item";
+
+        row.innerHTML = `
+          <div>
+            <div class="cart-item-name">${product.name}</div>
+            <div style="font-size: 11px; color:#9ca3af;">
+              ?${product.price.toFixed(2)} each
+            </div>
+          </div>
+          <div class="cart-item-controls">
+            <button class="btn-sm btn-ghost btn-cart-minus" data-id="${product.id}">-</button>
+            <span class="quantity-badge">${item.quantity}</span>
+            <button class="btn-sm btn-ghost btn-cart-plus" data-id="${product.id}">+</button>
+            <span style="width:70px; text-align:right;">?${itemTotal.toFixed(2)}</span>
+            <button class="btn-sm btn-ghost btn-cart-remove" data-id="${product.id}" title="Remove">
+              ?
+            </button>
+          </div>
+        `;
+
+        cartItemsDiv.appendChild(row);
+      });
+
+      cartTotalSpan.textContent = "?" + total.toFixed(2);
+    }
+
+    function renderProductTable() {
+      const tbody = document.getElementById("productTableBody");
+      tbody.innerHTML = "";
+
+      if (products.length === 0) {
+        tbody.innerHTML = `
+          <tr><td colspan="4" style="text-align:center; padding:10px; color:#9ca3af;">
+            No products yet. Add your first product using the form.
+          </td></tr>
+        `;
+        return;
+      }
+
+      const filteredProducts = products.filter((product) => {
+        const nameMatch = product.name.toLowerCase().includes(adminSearchTerm);
+        const category = (product.category || "").toLowerCase();
+        const categoryMatch =
+          adminCategoryFilter === "all" ||
+          category === adminCategoryFilter.toLowerCase();
+        return nameMatch && categoryMatch;
+      });
+
+      if (filteredProducts.length === 0) {
+        tbody.innerHTML = `
+          <tr><td colspan="4" style="text-align:center; padding:10px; color:#9ca3af;">
+            No products match your search/filter.
+          </td></tr>
+        `;
+        return;
+      }
+
+      filteredProducts.forEach((product) => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${product.name}</td>
+          <td>?${product.price.toFixed(2)}</td>
+          <td>${product.category || "Uncategorized"}</td>
+          <td>
+            <button class="btn-sm btn-ghost btn-edit-product" data-id="${product.id}">Edit</button>
+            <button class="btn-sm btn-ghost btn-delete-product" data-id="${product.id}">Del</button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function addToCart(productId) {
+      const idNum = Number(productId);
+      const product = products.find((p) => p.id === idNum);
+      if (!product) return;
+
+      const existing = cart.find((item) => item.productId === idNum);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ productId: idNum, quantity: 1 });
+      }
+      renderCart();
+    }
+
+    function changeCartQuantity(productId, delta) {
+      const idNum = Number(productId);
+      const item = cart.find((i) => i.productId === idNum);
+      if (!item) return;
+      item.quantity += delta;
+      if (item.quantity <= 0) {
+        cart = cart.filter((i) => i.productId !== idNum);
+      }
+      renderCart();
+    }
+
+    function removeFromCart(productId) {
+      const idNum = Number(productId);
+      cart = cart.filter((i) => i.productId !== idNum);
+      renderCart();
+    }
+
+    function clearCart() {
+      cart = [];
+      renderCart();
+    }
+
+    function resetProductForm() {
+      document.getElementById("productId").value = "";
+      document.getElementById("productName").value = "";
+      document.getElementById("productPrice").value = "";
+      document.getElementById("productCategory").value = "";
+      document.getElementById("productIcon").value = "";
+      document.getElementById("productDescription").value = "";
+    }
+
+    function fillFormForEdit(product) {
+      document.getElementById("productId").value = product.id;
+      document.getElementById("productName").value = product.name;
+      document.getElementById("productPrice").value = product.price;
+      document.getElementById("productCategory").value = product.category || "";
+      document.getElementById("productIcon").value = product.iconUrl || "";
+      document.getElementById("productDescription").value = product.description || "";
+    }
+
+    function showStoreView() {
+      document.getElementById("storeView").classList.remove("hidden");
+      document.getElementById("adminView").classList.add("hidden");
+      document.getElementById("storeTabBtn").classList.add("active");
+      document.getElementById("adminTabBtn").classList.remove("active");
+    }
+
+    function showAdminView() {
+      if (!isAdminLoggedIn) {
+        alert("Admin access only. Please log in first.");
+        return;
+      }
+      document.getElementById("storeView").classList.add("hidden");
+      document.getElementById("adminView").classList.remove("hidden");
+      document.getElementById("storeTabBtn").classList.remove("active");
+      document.getElementById("adminTabBtn").classList.add("active");
+    }
+
+    function openQrOverlay() {
+      document.getElementById("qrOverlay").classList.remove("hidden");
+    }
+
+    function closeQrOverlay() {
+      document.getElementById("qrOverlay").classList.add("hidden");
+    }
+
+    // ?? Calculate total and build UPI link
+    function generateUpiLinkFromCart() {
+      let total = 0;
+      const itemSummaries = [];
+
+      cart.forEach((item) => {
+        const product = products.find((p) => p.id === item.productId);
+        if (!product) return;
+        total += product.price * item.quantity;
+        itemSummaries.push(`${product.name} x${item.quantity}`);
+      });
+
+      if (total <= 0) return null;
+
+      const amount = total.toFixed(2);
+      const noteText = `Order: ${itemSummaries.join(", ")}`.slice(0, 80);
+
+      const upiUrl =
+        "upi://pay?" +
+        "pa=" + encodeURIComponent(UPI_ID) +
+        "&pn=" + encodeURIComponent(PAYEE_NAME) +
+        "&am=" + encodeURIComponent(amount) +
+        "&cu=" + encodeURIComponent(CURRENCY) +
+        "&tn=" + encodeURIComponent(noteText);
+
+      return { upiUrl, amount, itemSummaries };
+    }
+
+    // ?? Build email body text
+    function buildOrderEmailBody(itemSummaries, amount) {
+      const now = new Date();
+      let body = "";
+      body += "New order from Robotics & Electronics Store\n\n";
+      body += "Date/Time: " + now.toLocaleString() + "\n\n";
+      body += "Items:\n";
+      itemSummaries.forEach((item) => {
+        body += "- " + item + "\n";
+      });
+      body += "\nTotal amount: ?" + amount + "\n";
+      body += "Payment method: UPI QR (scanned on website)\n\n";
+      body += "Please confirm delivery / pickup with the customer.\n";
+      return body;
+    }
+
+    // ?? Open Gmail compose with order details
+    function openEmailWithOrder(emailBody) {
+      const subject = encodeURIComponent("New Order from Robotics & Electronics Store");
+      const body = encodeURIComponent(emailBody);
+
+      const gmailUrl =
+        "https://mail.google.com/mail/?view=cm&fs=1" +
+        "&to=" + encodeURIComponent(ADMIN_EMAIL) +
+        "&su=" + subject +
+        "&body=" + body;
+
+      window.open(gmailUrl, "_blank");
+    }
+
+    // ?? Create or update QR code
+    function showPaymentQr() {
+      const result = generateUpiLinkFromCart();
+      if (!result) {
+        alert("Your cart is empty or total is zero.");
+        return;
+      }
+
+      lastOrderInfo = result;
+
+      const { upiUrl, amount, itemSummaries } = result;
+
+      document.getElementById("qrAmount").textContent = "Amount: ?" + amount;
+      document.getElementById("orderSummaryShort").textContent =
+        "Items: " + itemSummaries.join(", ");
+
+      const qrContainer = document.getElementById("qrcode");
+      qrContainer.innerHTML = "";
+
+      qrInstance = new QRCode(qrContainer, {
+        text: upiUrl,
+        width: 200,
+        height: 200
+      });
+
+      openQrOverlay();
+    }
+
+    // ? After customer clicks "I Have Paid & Confirm Order"
+    function handleConfirmPaid() {
+      if (!lastOrderInfo) {
+        alert("No order information found. Please generate the QR again.");
+        return;
+      }
+
+      const { amount, itemSummaries } = lastOrderInfo;
+      const emailBody = buildOrderEmailBody(itemSummaries, amount);
+
+      // Open Gmail compose with order details
+      openEmailWithOrder(emailBody);
+
+      // Clear cart for next order
+      clearCart();
+
+      // Show "Order placed" message in the modal
+      const modal = document.querySelector(".qr-modal");
+      modal.innerHTML = `
+        <h3>Order Placed ?</h3>
+        <p style="font-size:13px; margin-bottom:10px;">
+          Thank you! Your order has been placed.
+        </p>
+        <p class="subtitle" style="margin-bottom:12px;">
+          An email with your order details has been prepared for the shop owner.
+        </p>
+        <button class="btn-sm btn-primary" id="closeOrderStatusBtn">Close</button>
+      `;
+
+      document.getElementById("closeOrderStatusBtn").addEventListener("click", () => {
+        closeQrOverlay();
+        window.location.reload();
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadProductsFromStorage();
+      seedDefaultProductsIfEmpty();
+
+      // Initial category options
+      updateCategoryOptions("storeCategoryFilter");
+      updateCategoryOptions("adminCategoryFilter");
+
+      renderProducts();
+      renderProductTable();
+      renderCart();
+
+      // Tabs
+      document.getElementById("storeTabBtn").addEventListener("click", showStoreView);
+
+      document.getElementById("adminTabBtn").addEventListener("click", () => {
+        if (!isAdminLoggedIn) {
+          const user = prompt("Enter Admin ID:");
+          const pass = prompt("Enter Admin Password:");
+          if (user === ADMIN_USERNAME && pass === ADMIN_PASSWORD) {
+            isAdminLoggedIn = true;
+            alert("Admin login successful.");
+            showAdminView();
+          } else {
+            alert("Invalid admin credentials. Access denied.");
+            showStoreView();
+          }
+        } else {
+          showAdminView();
+        }
+      });
+
+      // Customer view: add to cart
+      document.getElementById("productGrid").addEventListener("click", (e) => {
+        if (e.target.closest(".add-to-cart-btn")) {
+          const btn = e.target.closest(".add-to-cart-btn");
+          const id = btn.getAttribute("data-id");
+          addToCart(id);
+        }
+      });
+
+      // Cart buttons
+      document.getElementById("cartItems").addEventListener("click", (e) => {
+        const plusBtn = e.target.closest(".btn-cart-plus");
+        const minusBtn = e.target.closest(".btn-cart-minus");
+        const removeBtn = e.target.closest(".btn-cart-remove");
+
+        if (plusBtn) {
+          const id = plusBtn.getAttribute("data-id");
+          changeCartQuantity(id, +1);
+        } else if (minusBtn) {
+          const id = minusBtn.getAttribute("data-id");
+          changeCartQuantity(id, -1);
+        } else if (removeBtn) {
+          const id = removeBtn.getAttribute("data-id");
+          removeFromCart(id);
+        }
+      });
+
+      document.getElementById("clearCartButton").addEventListener("click", () => {
+        if (cart.length === 0) return;
+        if (confirm("Clear all items from the cart?")) {
+          clearCart();
+        }
+      });
+
+      document.getElementById("payButton").addEventListener("click", () => {
+        if (cart.length === 0) {
+          alert("Your cart is empty. Please add at least one product.");
+          return;
+        }
+        showPaymentQr();
+      });
+
+      document.getElementById("confirmPaidBtn").addEventListener("click", handleConfirmPaid);
+
+      document.getElementById("closeQrBtn").addEventListener("click", closeQrOverlay);
+      document.getElementById("qrOverlay").addEventListener("click", (e) => {
+        if (e.target.id === "qrOverlay") {
+          closeQrOverlay();
+        }
+      });
+
+      // Admin form
+      document.getElementById("productForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const idVal = document.getElementById("productId").value;
+        const name = document.getElementById("productName").value.trim();
+        const priceStr = document.getElementById("productPrice").value;
+        const category = document.getElementById("productCategory").value.trim();
+        const iconUrl = document.getElementById("productIcon").value.trim();
+        const description = document.getElementById("productDescription").value.trim();
+
+        if (!name || !priceStr) {
+          alert("Please fill at least the Name and Price.");
+          return;
+        }
+
+        const price = parseFloat(priceStr);
+        if (isNaN(price) || price < 0) {
+          alert("Please enter a valid price.");
+          return;
+        }
+
+        if (idVal) {
+          const idNum = Number(idVal);
+          const idx = products.findIndex((p) => p.id === idNum);
+          if (idx !== -1) {
+            products[idx].name = name;
+            products[idx].price = price;
+            products[idx].category = category;
+            products[idx].iconUrl = iconUrl;
+            products[idx].description = description;
+          }
+        } else {
+          const newProduct = {
+            id: Date.now(),
+            name,
+            price,
+            category,
+            iconUrl,
+            description
+          };
+          products.push(newProduct);
+        }
+
+        saveProductsToStorage();
+        updateCategoryOptions("storeCategoryFilter");
+        updateCategoryOptions("adminCategoryFilter");
+        renderProducts();
+        renderProductTable();
+        resetProductForm();
+      });
+
+      document.getElementById("resetFormBtn").addEventListener("click", resetProductForm);
+
+      // Admin table buttons
+      document.getElementById("productTableBody").addEventListener("click", (e) => {
+        const editBtn = e.target.closest(".btn-edit-product");
+        const deleteBtn = e.target.closest(".btn-delete-product");
+
+        if (editBtn) {
+          const id = Number(editBtn.getAttribute("data-id"));
+          const product = products.find((p) => p.id === id);
+          if (product) {
+            fillFormForEdit(product);
+          }
+        } else if (deleteBtn) {
+          const id = Number(deleteBtn.getAttribute("data-id"));
+          const product = products.find((p) => p.id === id);
+          if (!product) return;
+
+          if (confirm(`Delete product "${product.name}"?`)) {
+            products = products.filter((p) => p.id !== id);
+            cart = cart.filter((item) => item.productId !== id);
+
+            saveProductsToStorage();
+            updateCategoryOptions("storeCategoryFilter");
+            updateCategoryOptions("adminCategoryFilter");
+            renderProducts();
+            renderProductTable();
+            renderCart();
+          }
+        }
+      });
+
+      // ?? Customer search + category
+      document.getElementById("storeSearchInput").addEventListener("input", (e) => {
+        storeSearchTerm = e.target.value.toLowerCase();
+        renderProducts();
+      });
+
+      document.getElementById("storeCategoryFilter").addEventListener("change", (e) => {
+        storeCategoryFilter = e.target.value;
+        renderProducts();
+      });
+
+      // ?? Admin search + category
+      document.getElementById("adminSearchInput").addEventListener("input", (e) => {
+        adminSearchTerm = e.target.value.toLowerCase();
+        renderProductTable();
+      });
+
+      document.getElementById("adminCategoryFilter").addEventListener("change", (e) => {
+        adminCategoryFilter = e.target.value;
+        renderProductTable();
+      });
+    });
+  </script>
+</body>
+</html>
