@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Robotics Store - Grade 10 Project</title>
+  <title>RoboMatrix - Robotics & Electronics Store</title>
   <style>
     * {
       box-sizing: border-box;
@@ -33,35 +33,40 @@
     }
 
     header {
-      padding: 16px 24px;
+      padding: 12px 16px;
       border-bottom: 1px solid #1f2937;
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: radial-gradient(circle at top left, #1e293b, #020617);
+      gap: 10px;
     }
 
     header h1 {
-      font-size: 20px;
+      font-size: 18px;
       display: flex;
       align-items: center;
       gap: 8px;
+      white-space: nowrap;
     }
 
-    header h1 span.logo {
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #22c55e, #0ea5e9);
-      font-size: 20px;
+    .logo-img {
+      height: 36px;
+      width: auto;
+      display: block;
+    }
+
+    .brand-text {
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 16px;
     }
 
     .nav-buttons {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .nav-btn {
@@ -147,6 +152,7 @@
 
     .toolbar input {
       flex: 1 1 160px;
+      min-width: 0;
     }
 
     .toolbar select {
@@ -155,7 +161,7 @@
 
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 12px;
     }
 
@@ -344,6 +350,7 @@
       display: flex;
       gap: 6px;
       margin-top: 2px;
+      flex-wrap: wrap;
     }
 
     .cart-note {
@@ -419,6 +426,7 @@
       display: flex;
       gap: 6px;
       margin-top: 2px;
+      flex-wrap: wrap;
     }
 
     .admin-buttons .btn-sm {
@@ -532,6 +540,7 @@
       display: none !important;
     }
 
+    /* Responsive tweaks */
     @media (max-width: 900px) {
       main {
         flex-direction: column;
@@ -542,20 +551,30 @@
       #adminView {
         max-height: none;
       }
+      .cart {
+        max-height: none;
+      }
     }
 
     @media (max-width: 640px) {
       header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+      }
+      header h1 {
+        width: 100%;
       }
       .nav-buttons {
         width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
       }
       .nav-btn {
-        flex: 1;
+        flex: 1 0 120px;
         justify-content: center;
+      }
+      .product-grid {
+        grid-template-columns: minmax(0, 1fr);
       }
     }
   </style>
@@ -564,8 +583,9 @@
   <div class="app">
     <header>
       <h1>
-        <span class="logo">??</span>
-        Robotics & Electronics Store
+        <!-- ?? Use your RoboMatrix logo file here -->
+        <img src="robomatrix-logo.png" alt="RoboMatrix Logo" class="logo-img" />
+        <span class="brand-text">RoboMatrix</span>
       </h1>
       <div class="nav-buttons">
         <button class="nav-btn active" id="storeTabBtn">Store</button>
@@ -1089,7 +1109,7 @@
     function buildOrderEmailBody(itemSummaries, amount) {
       const now = new Date();
       let body = "";
-      body += "New order from Robotics & Electronics Store\n\n";
+      body += "New order from RoboMatrix Store\n\n";
       body += "Date/Time: " + now.toLocaleString() + "\n\n";
       body += "Items:\n";
       itemSummaries.forEach((item) => {
@@ -1103,7 +1123,7 @@
 
     // ?? Open Gmail compose with order details
     function openEmailWithOrder(emailBody) {
-      const subject = encodeURIComponent("New Order from Robotics & Electronics Store");
+      const subject = encodeURIComponent("New Order from RoboMatrix Store");
       const body = encodeURIComponent(emailBody);
 
       const gmailUrl =
